@@ -366,6 +366,30 @@ func (a *AddProjectItemOptions) GetID() int64 {
 	return *a.ID
 }
 
+// GetNumber returns the Number field if it's non-nil, zero value otherwise.
+func (a *AddProjectItemOptions) GetNumber() string {
+	if a == nil || a.Number == nil {
+		return ""
+	}
+	return *a.Number
+}
+
+// GetOwner returns the Owner field if it's non-nil, zero value otherwise.
+func (a *AddProjectItemOptions) GetOwner() string {
+	if a == nil || a.Owner == nil {
+		return ""
+	}
+	return *a.Owner
+}
+
+// GetRepo returns the Repo field if it's non-nil, zero value otherwise.
+func (a *AddProjectItemOptions) GetRepo() string {
+	if a == nil || a.Repo == nil {
+		return ""
+	}
+	return *a.Repo
+}
+
 // GetType returns the Type field.
 func (a *AddProjectItemOptions) GetType() *ProjectV2ItemContentType {
 	if a == nil {
@@ -14599,35 +14623,19 @@ func (l *ListOrgCodeSecurityConfigurationOptions) GetTargetType() string {
 }
 
 // GetQuery returns the Query field if it's non-nil, zero value otherwise.
-func (l *ListProjectsOptions) GetQuery() string {
+func (l *ListProjectItemsOptions) GetQuery() string {
 	if l == nil || l.Query == nil {
 		return ""
 	}
 	return *l.Query
 }
 
-// GetAfter returns the After field if it's non-nil, zero value otherwise.
-func (l *ListProjectsPaginationOptions) GetAfter() string {
-	if l == nil || l.After == nil {
+// GetQuery returns the Query field if it's non-nil, zero value otherwise.
+func (l *ListProjectsOptions) GetQuery() string {
+	if l == nil || l.Query == nil {
 		return ""
 	}
-	return *l.After
-}
-
-// GetBefore returns the Before field if it's non-nil, zero value otherwise.
-func (l *ListProjectsPaginationOptions) GetBefore() string {
-	if l == nil || l.Before == nil {
-		return ""
-	}
-	return *l.Before
-}
-
-// GetPerPage returns the PerPage field if it's non-nil, zero value otherwise.
-func (l *ListProjectsPaginationOptions) GetPerPage() int {
-	if l == nil || l.PerPage == nil {
-		return 0
-	}
-	return *l.PerPage
+	return *l.Query
 }
 
 // GetCount returns the Count field if it's non-nil, zero value otherwise.
@@ -19492,6 +19500,30 @@ func (p *ProjectName) GetFrom() string {
 		return ""
 	}
 	return *p.From
+}
+
+// GetAfter returns the After field if it's non-nil, zero value otherwise.
+func (p *ProjectsPaginationOptions) GetAfter() string {
+	if p == nil || p.After == nil {
+		return ""
+	}
+	return *p.After
+}
+
+// GetBefore returns the Before field if it's non-nil, zero value otherwise.
+func (p *ProjectsPaginationOptions) GetBefore() string {
+	if p == nil || p.Before == nil {
+		return ""
+	}
+	return *p.Before
+}
+
+// GetPerPage returns the PerPage field if it's non-nil, zero value otherwise.
+func (p *ProjectsPaginationOptions) GetPerPage() int {
+	if p == nil || p.PerPage == nil {
+		return 0
+	}
+	return *p.PerPage
 }
 
 // GetBody returns the Body field if it's non-nil, zero value otherwise.

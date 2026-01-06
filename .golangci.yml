@@ -192,6 +192,7 @@ linters:
             - ListDeploymentProtectionRuleResponse.ProtectionRules
             - ListIDPGroupsOptions.Query
             - ListProjectsOptions.Query
+            - ListProjectItemsOptions.Query
             - OrganizationCustomRepoRoles.CustomRepoRoles # TODO: CustomRoles
             - OrganizationCustomRoles.CustomRepoRoles # TODO: Roles
             - PreReceiveHook.ConfigURL

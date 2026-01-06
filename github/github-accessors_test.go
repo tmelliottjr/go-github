@@ -490,6 +490,39 @@ func TestAddProjectItemOptions_GetID(tt *testing.T) {
 	a.GetID()
 }
 
+func TestAddProjectItemOptions_GetNumber(tt *testing.T) {
+	tt.Parallel()
+	var zeroValue string
+	a := &AddProjectItemOptions{Number: &zeroValue}
+	a.GetNumber()
+	a = &AddProjectItemOptions{}
+	a.GetNumber()
+	a = nil
+	a.GetNumber()
+}
+
+func TestAddProjectItemOptions_GetOwner(tt *testing.T) {
+	tt.Parallel()
+	var zeroValue string
+	a := &AddProjectItemOptions{Owner: &zeroValue}
+	a.GetOwner()
+	a = &AddProjectItemOptions{}
+	a.GetOwner()
+	a = nil
+	a.GetOwner()
+}
+
+func TestAddProjectItemOptions_GetRepo(tt *testing.T) {
+	tt.Parallel()
+	var zeroValue string
+	a := &AddProjectItemOptions{Repo: &zeroValue}
+	a.GetRepo()
+	a = &AddProjectItemOptions{}
+	a.GetRepo()
+	a = nil
+	a.GetRepo()
+}
+
 func TestAddProjectItemOptions_GetType(tt *testing.T) {
 	tt.Parallel()
 	a := &AddProjectItemOptions{}
@@ -18985,6 +19018,17 @@ func TestListOrgCodeSecurityConfigurationOptions_GetTargetType(tt *testing.T) {
 	l.GetTargetType()
 }
 
+func TestListProjectItemsOptions_GetQuery(tt *testing.T) {
+	tt.Parallel()
+	var zeroValue string
+	l := &ListProjectItemsOptions{Query: &zeroValue}
+	l.GetQuery()
+	l = &ListProjectItemsOptions{}
+	l.GetQuery()
+	l = nil
+	l.GetQuery()
+}
+
 func TestListProjectsOptions_GetQuery(tt *testing.T) {
 	tt.Parallel()
 	var zeroValue string
@@ -18994,39 +19038,6 @@ func TestListProjectsOptions_GetQuery(tt *testing.T) {
 	l.GetQuery()
 	l = nil
 	l.GetQuery()
-}
-
-func TestListProjectsPaginationOptions_GetAfter(tt *testing.T) {
-	tt.Parallel()
-	var zeroValue string
-	l := &ListProjectsPaginationOptions{After: &zeroValue}
-	l.GetAfter()
-	l = &ListProjectsPaginationOptions{}
-	l.GetAfter()
-	l = nil
-	l.GetAfter()
-}
-
-func TestListProjectsPaginationOptions_GetBefore(tt *testing.T) {
-	tt.Parallel()
-	var zeroValue string
-	l := &ListProjectsPaginationOptions{Before: &zeroValue}
-	l.GetBefore()
-	l = &ListProjectsPaginationOptions{}
-	l.GetBefore()
-	l = nil
-	l.GetBefore()
-}
-
-func TestListProjectsPaginationOptions_GetPerPage(tt *testing.T) {
-	tt.Parallel()
-	var zeroValue int
-	l := &ListProjectsPaginationOptions{PerPage: &zeroValue}
-	l.GetPerPage()
-	l = &ListProjectsPaginationOptions{}
-	l.GetPerPage()
-	l = nil
-	l.GetPerPage()
 }
 
 func TestListProvisionedSCIMGroupsEnterpriseOptions_GetCount(tt *testing.T) {
@@ -25343,6 +25354,39 @@ func TestProjectName_GetFrom(tt *testing.T) {
 	p.GetFrom()
 	p = nil
 	p.GetFrom()
+}
+
+func TestProjectsPaginationOptions_GetAfter(tt *testing.T) {
+	tt.Parallel()
+	var zeroValue string
+	p := &ProjectsPaginationOptions{After: &zeroValue}
+	p.GetAfter()
+	p = &ProjectsPaginationOptions{}
+	p.GetAfter()
+	p = nil
+	p.GetAfter()
+}
+
+func TestProjectsPaginationOptions_GetBefore(tt *testing.T) {
+	tt.Parallel()
+	var zeroValue string
+	p := &ProjectsPaginationOptions{Before: &zeroValue}
+	p.GetBefore()
+	p = &ProjectsPaginationOptions{}
+	p.GetBefore()
+	p = nil
+	p.GetBefore()
+}
+
+func TestProjectsPaginationOptions_GetPerPage(tt *testing.T) {
+	tt.Parallel()
+	var zeroValue int
+	p := &ProjectsPaginationOptions{PerPage: &zeroValue}
+	p.GetPerPage()
+	p = &ProjectsPaginationOptions{}
+	p.GetPerPage()
+	p = nil
+	p.GetPerPage()
 }
 
 func TestProjectV2_GetBody(tt *testing.T) {

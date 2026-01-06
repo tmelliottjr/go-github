@@ -86,7 +86,7 @@ type ProjectV2 struct {
 
 func (p ProjectV2) String() string { return Stringify(p) }
 
-// ListProjectsPaginationOptions specifies optional parameters to list projects for user / organization.
+// ProjectsPaginationOptions specifies optional parameters to list projects for user / organization.
 //
 // Note: Pagination is powered by before/after cursor-style pagination. After the initial call,
 // inspect the returned *Response. Use resp.After as the opts.After value to request
@@ -94,7 +94,7 @@ func (p ProjectV2) String() string { return Stringify(p) }
 // page. Set either Before or After for a request; if both are
 // supplied GitHub API will return an error. PerPage controls the number of items
 // per page (max 100 per GitHub API docs).
-type ListProjectsPaginationOptions struct {
+type ProjectsPaginationOptions struct {
 	// A cursor, as given in the Link header. If specified, the query only searches for events before this cursor.
 	Before *string `url:"before,omitempty"`
 
@@ -107,8 +107,7 @@ type ListProjectsPaginationOptions struct {
 
 // ListProjectsOptions specifies optional parameters to list projects for user / organization.
 type ListProjectsOptions struct {
-	ListProjectsPaginationOptions
-
+	ProjectsPaginationOptions
 	// Q is an optional query string to limit results to projects of the specified type.
 	Query *string `url:"q,omitempty"`
 }
@@ -456,24 +455,48 @@ func (s *ProjectsService) GetUserProjectField(ctx context.Context, user string, 
 // Note: Pagination uses before/after cursor-style pagination similar to ListProjectsOptions.
 // "Fields" can be used to restrict which field values are returned (by their numeric IDs).
 type ListProjectItemsOptions struct {
-	// Embed ListProjectsOptions to reuse pagination and query parameters.
-	ListProjectsOptions
-	// Fields restricts which field values are returned by numeric field IDs.
 	Fields []int64 `url:"fields,omitempty,comma"`
+	ProjectsPaginationOptions
+	// Q is an optional query string to limit results to projects of the specified type.
+	Query *string `url:"q,omitempty"`
+}
+
+// ListProjectViewItemsOptions specifies optional parameters when listing project view items.
+// Note: Pagination uses before/after cursor-style pagination similar to ListProjectsOptions.
+// "Fields" can be used to restrict which field values are returned (by their numeric IDs).
+type ListProjectViewItemsOptions struct {
+	Fields []int64 `url:"fields,omitempty,comma"`
+	ProjectsPaginationOptions
 }
 
 // GetProjectItemOptions specifies optional parameters when getting a project item.
 type GetProjectItemOptions struct {
-	// Fields restricts which field values are returned by numeric field IDs.
 	Fields []int64 `url:"fields,omitempty,comma"`
 }
 
 // AddProjectItemOptions represents the payload to add an item (issue or pull request)
-// to a project. The Type must be either "Issue" or "PullRequest" (as per API docs) and
-// ID is the numerical ID of that issue or pull request.
+// to a project.
+//
+// There are two modes for adding items:
+//
+// Mode 1 (by unique ID): Specify Type and ID to reference the item by its unique numeric ID.
+// - Type must be either "Issue" or "PullRequest"
+// - ID is the numerical ID of that issue or pull request
+//
+// Mode 2 (by number/repo/owner): Specify Number, Owner, and Repo to reference an issue/PR by
+// repository and number.
+// - Type must be either "Issue" or "PullRequest"
+// - Number is the issue or pull request number (e.g., "123" for issue #123)
+// - Owner is the repository owner (organization or user)
+// - Repo is the repository name
+//
+// Note: Only one mode should be used, API will return an error if both are provided.
 type AddProjectItemOptions struct {
-	Type *ProjectV2ItemContentType `json:"type,omitempty"`
-	ID   *int64                    `json:"id,omitempty"`
+	Type   *ProjectV2ItemContentType `json:"type,omitempty"`
+	ID     *int64                    `json:"id,omitempty"`
+	Number *string                   `json:"number,omitempty"`
+	Owner  *string                   `json:"owner,omitempty"`
+	Repo   *string                   `json:"repo,omitempty"`
 }
 
 // UpdateProjectV2Field represents a field update for a project item.
@@ -510,6 +533,31 @@ type UpdateProjectItemOptions struct {
 //meta:operation GET /orgs/{org}/projectsV2/{project_number}/items
 func (s *ProjectsService) ListOrganizationProjectItems(ctx context.Context, org string, projectNumber int, opts *ListProjectItemsOptions) ([]*ProjectV2Item, *Response, error) {
 	u := fmt.Sprintf("orgs/%v/projectsV2/%v/items", org, projectNumber)
+	u, err := addOptions(u, opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := s.client.NewRequest("GET", u, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var items []*ProjectV2Item
+	resp, err := s.client.Do(ctx, req, &items)
+	if err != nil {
+		return nil, resp, err
+	}
+	return items, resp, nil
+}
+
+// ListOrganizationProjectViewItems lists items for an organization owned project view.
+//
+// GitHub API docs: https://docs.github.com/rest/projects/items#list-items-for-an-organization-project-view
+//
+//meta:operation GET /orgs/{org}/projectsV2/{project_number}/views/{view_number}/items
+func (s *ProjectsService) ListOrganizationProjectViewItems(ctx context.Context, org string, projectNumber, viewNumber int, opts *ListProjectViewItemsOptions) ([]*ProjectV2Item, *Response, error) {
+	u := fmt.Sprintf("orgs/%v/projectsV2/%v/views/%v/items", org, projectNumber, viewNumber)
 	u, err := addOptions(u, opts)
 	if err != nil {
 		return nil, nil, err
@@ -619,6 +667,31 @@ func (s *ProjectsService) ListUserProjectItems(ctx context.Context, username str
 	if err != nil {
 		return nil, nil, err
 	}
+	var items []*ProjectV2Item
+	resp, err := s.client.Do(ctx, req, &items)
+	if err != nil {
+		return nil, resp, err
+	}
+	return items, resp, nil
+}
+
+// ListUserProjectViewItems lists items for a user owned project view.
+//
+// GitHub API docs: https://docs.github.com/rest/projects/items#list-items-for-a-user-project-view
+//
+//meta:operation GET /users/{username}/projectsV2/{project_number}/views/{view_number}/items
+func (s *ProjectsService) ListUserProjectViewItems(ctx context.Context, username string, projectNumber, viewNumber int, opts *ListProjectViewItemsOptions) ([]*ProjectV2Item, *Response, error) {
+	u := fmt.Sprintf("users/%v/projectsV2/%v/views/%v/items", username, projectNumber, viewNumber)
+	u, err := addOptions(u, opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := s.client.NewRequest("GET", u, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
 	var items []*ProjectV2Item
 	resp, err := s.client.Do(ctx, req, &items)
 	if err != nil {
