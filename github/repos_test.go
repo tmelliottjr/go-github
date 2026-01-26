@@ -308,6 +308,53 @@ func TestRepositoriesService_Create_org(t *testing.T) {
 	}
 }
 
+func TestRepositoriesService_Create_withCustomProperties(t *testing.T) {
+	t.Parallel()
+	client, mux, _ := setup(t)
+
+	input := &Repository{
+		Name: Ptr("n"),
+		CustomProperties: map[string]any{
+			"environment": "production",
+			"team":        "backend",
+			"priority":    1,
+		},
+	}
+
+	wantAcceptHeaders := []string{mediaTypeRepositoryTemplatePreview, mediaTypeRepositoryVisibilityPreview}
+	mux.HandleFunc("/orgs/o/repos", func(w http.ResponseWriter, r *http.Request) {
+		v := new(createRepoRequest)
+		assertNilError(t, json.NewDecoder(r.Body).Decode(v))
+
+		testMethod(t, r, "POST")
+		testHeader(t, r, "Accept", strings.Join(wantAcceptHeaders, ", "))
+		want := &createRepoRequest{
+			Name: Ptr("n"),
+			CustomProperties: map[string]any{
+				"environment": "production",
+				"team":        "backend",
+				"priority":    float64(1), // JSON unmarshals numbers as float64
+			},
+		}
+		if !cmp.Equal(v, want) {
+			t.Errorf("Request body = %+v, want %+v", v, want)
+		}
+
+		fmt.Fprint(w, `{"id":1}`)
+	})
+
+	ctx := t.Context()
+	repo, _, err := client.Repositories.Create(ctx, "o", input)
+	if err != nil {
+		t.Errorf("Repositories.Create returned error: %v", err)
+	}
+
+	want := &Repository{ID: Ptr(int64(1))}
+	if !cmp.Equal(repo, want) {
+		t.Errorf("Repositories.Create returned %+v, want %+v", repo, want)
+	}
+}
+
 func TestRepositoriesService_CreateFromTemplate(t *testing.T) {
 	t.Parallel()
 	client, mux, _ := setup(t)
@@ -4568,7 +4615,7 @@ func TestRepository_UnmarshalJSON(t *testing.T) {
 		},
 		"Partial project": {
 			data:           []byte(`{"id":10270722,"name":"go-github","private":false,"owner":{"login":"google"},"created_at":"2013-05-24T16:42:58Z","license":{},"topics":["github"],"permissions":{"pull":true},"custom_properties":{},"organization":{"login":"google"}}`),
-			wantRepository: Repository{ID: Ptr(int64(10270722)), Name: Ptr("go-github"), Private: Ptr(false), Owner: &User{Login: Ptr("google")}, CreatedAt: &Timestamp{time.Date(2013, 5, 24, 16, 42, 58, 0, time.UTC)}, License: &License{}, Topics: []string{"github"}, Permissions: map[string]bool{"pull": true}, CustomProperties: map[string]any{}, Organization: &Organization{Login: Ptr("google")}},
+			wantRepository: Repository{ID: Ptr(int64(10270722)), Name: Ptr("go-github"), Private: Ptr(false), Owner: &User{Login: Ptr("google")}, CreatedAt: &Timestamp{time.Date(2013, 5, 24, 16, 42, 58, 0, time.UTC)}, License: &License{}, Topics: []string{"github"}, Permissions: &RepositoryPermissions{Pull: Ptr(true)}, CustomProperties: map[string]any{}, Organization: &Organization{Login: Ptr("google")}},
 			wantErr:        false,
 		},
 		"With custom properties": {

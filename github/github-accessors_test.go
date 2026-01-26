@@ -2940,6 +2940,17 @@ func TestBypassActor_GetBypassMode(tt *testing.T) {
 	b.GetBypassMode()
 }
 
+func TestBypassReviewer_GetSecurityConfigurationID(tt *testing.T) {
+	tt.Parallel()
+	var zeroValue int64
+	b := &BypassReviewer{SecurityConfigurationID: &zeroValue}
+	b.GetSecurityConfigurationID()
+	b = &BypassReviewer{}
+	b.GetSecurityConfigurationID()
+	b = nil
+	b.GetSecurityConfigurationID()
+}
+
 func TestCheckRun_GetApp(tt *testing.T) {
 	tt.Parallel()
 	c := &CheckRun{}
@@ -4514,6 +4525,25 @@ func TestCodeSecurityConfiguration_GetSecretScanningDelegatedAlertDismissal(tt *
 	c.GetSecretScanningDelegatedAlertDismissal()
 	c = nil
 	c.GetSecretScanningDelegatedAlertDismissal()
+}
+
+func TestCodeSecurityConfiguration_GetSecretScanningDelegatedBypass(tt *testing.T) {
+	tt.Parallel()
+	var zeroValue string
+	c := &CodeSecurityConfiguration{SecretScanningDelegatedBypass: &zeroValue}
+	c.GetSecretScanningDelegatedBypass()
+	c = &CodeSecurityConfiguration{}
+	c.GetSecretScanningDelegatedBypass()
+	c = nil
+	c.GetSecretScanningDelegatedBypass()
+}
+
+func TestCodeSecurityConfiguration_GetSecretScanningDelegatedBypassOptions(tt *testing.T) {
+	tt.Parallel()
+	c := &CodeSecurityConfiguration{}
+	c.GetSecretScanningDelegatedBypassOptions()
+	c = nil
+	c.GetSecretScanningDelegatedBypassOptions()
 }
 
 func TestCodeSecurityConfiguration_GetSecretScanningGenericSecrets(tt *testing.T) {
@@ -9323,17 +9353,6 @@ func TestCustomPatternBackfillScan_GetPatternSlug(tt *testing.T) {
 	c.GetPatternSlug()
 }
 
-func TestCustomProperty_GetDefaultValue(tt *testing.T) {
-	tt.Parallel()
-	var zeroValue string
-	c := &CustomProperty{DefaultValue: &zeroValue}
-	c.GetDefaultValue()
-	c = &CustomProperty{}
-	c.GetDefaultValue()
-	c = nil
-	c.GetDefaultValue()
-}
-
 func TestCustomProperty_GetDescription(tt *testing.T) {
 	tt.Parallel()
 	var zeroValue string
@@ -13251,6 +13270,17 @@ func TestGenerateJITConfigRequest_GetWorkFolder(tt *testing.T) {
 	g.GetWorkFolder()
 	g = nil
 	g.GetWorkFolder()
+}
+
+func TestGenerateNotesOptions_GetConfigurationFilePath(tt *testing.T) {
+	tt.Parallel()
+	var zeroValue string
+	g := &GenerateNotesOptions{ConfigurationFilePath: &zeroValue}
+	g.GetConfigurationFilePath()
+	g = &GenerateNotesOptions{}
+	g.GetConfigurationFilePath()
+	g = nil
+	g.GetConfigurationFilePath()
 }
 
 func TestGenerateNotesOptions_GetPreviousTagName(tt *testing.T) {
@@ -29252,6 +29282,14 @@ func TestRateLimits_GetCore(tt *testing.T) {
 	r.GetCore()
 }
 
+func TestRateLimits_GetDependencySBOM(tt *testing.T) {
+	tt.Parallel()
+	r := &RateLimits{}
+	r.GetDependencySBOM()
+	r = nil
+	r.GetDependencySBOM()
+}
+
 func TestRateLimits_GetDependencySnapshots(tt *testing.T) {
 	tt.Parallel()
 	r := &RateLimits{}
@@ -30969,10 +31007,7 @@ func TestRepository_GetParent(tt *testing.T) {
 
 func TestRepository_GetPermissions(tt *testing.T) {
 	tt.Parallel()
-	zeroValue := map[string]bool{}
-	r := &Repository{Permissions: zeroValue}
-	r.GetPermissions()
-	r = &Repository{}
+	r := &Repository{}
 	r.GetPermissions()
 	r = nil
 	r.GetPermissions()
@@ -32409,6 +32444,61 @@ func TestRepositoryPermissionLevel_GetUser(tt *testing.T) {
 	r.GetUser()
 	r = nil
 	r.GetUser()
+}
+
+func TestRepositoryPermissions_GetAdmin(tt *testing.T) {
+	tt.Parallel()
+	var zeroValue bool
+	r := &RepositoryPermissions{Admin: &zeroValue}
+	r.GetAdmin()
+	r = &RepositoryPermissions{}
+	r.GetAdmin()
+	r = nil
+	r.GetAdmin()
+}
+
+func TestRepositoryPermissions_GetMaintain(tt *testing.T) {
+	tt.Parallel()
+	var zeroValue bool
+	r := &RepositoryPermissions{Maintain: &zeroValue}
+	r.GetMaintain()
+	r = &RepositoryPermissions{}
+	r.GetMaintain()
+	r = nil
+	r.GetMaintain()
+}
+
+func TestRepositoryPermissions_GetPull(tt *testing.T) {
+	tt.Parallel()
+	var zeroValue bool
+	r := &RepositoryPermissions{Pull: &zeroValue}
+	r.GetPull()
+	r = &RepositoryPermissions{}
+	r.GetPull()
+	r = nil
+	r.GetPull()
+}
+
+func TestRepositoryPermissions_GetPush(tt *testing.T) {
+	tt.Parallel()
+	var zeroValue bool
+	r := &RepositoryPermissions{Push: &zeroValue}
+	r.GetPush()
+	r = &RepositoryPermissions{}
+	r.GetPush()
+	r = nil
+	r.GetPush()
+}
+
+func TestRepositoryPermissions_GetTriage(tt *testing.T) {
+	tt.Parallel()
+	var zeroValue bool
+	r := &RepositoryPermissions{Triage: &zeroValue}
+	r.GetTriage()
+	r = &RepositoryPermissions{}
+	r.GetTriage()
+	r = nil
+	r.GetTriage()
 }
 
 func TestRepositoryRelease_GetAssetsURL(tt *testing.T) {
